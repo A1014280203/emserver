@@ -2,6 +2,7 @@ import requests
 import json
 from time import time
 from PIL import Image
+import logging
 
 
 API_HOST = 'http://a1.easemob.com/'
@@ -9,14 +10,22 @@ JSON_HEADER = {'Content-Type': 'application/json', 'Authorization': ''}
 ORG_APP_NAME = 'ORG_NAME/APP_NAME' # like 1603/testapp
 CLIENT_ID = 'YOUR_CLIENT_ID'
 CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
+LOG_FORMAT = logging.Formatter('%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
+
+def log(msg):
+    c = logging.StreamHandler()
+    c.setFormatter(LOG_FORMAT)
+    logger = logging.Logger('err_log', logging.ERROR)
+    logger.addHandler(c)
+    logger.error(msg)
 
 
 def parse_resp(r):
     if r.status_code == 200:
         return r.json()
     else:
-        print(r.status_code)
-        print(r.text)
+        log('[code:%d] %s' % (r.status_code, r.text))
         return None
 
 
